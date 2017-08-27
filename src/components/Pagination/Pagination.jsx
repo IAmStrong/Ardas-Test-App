@@ -1,69 +1,69 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-import '../../styles/font-awesome/font-awesome.less';
+import '../../assets/styles/font-awesome/font-awesome.less';
 import './pagination.less';
 
-class Pagination extends React.Component {
-    render () {
-        let data = this.getData();
+class Pagination extends Component {
+    constructor (props) {
+        super(props);
 
-        return (
-            <div className="pagination">
-                <span className="pages"> { this.getPageStatus() } </span>
-                <div className="arrows">
-                    {data.isFirstPage ?
-                        <i className="fa fa-chevron-left disabled" aria-hidden="true"></i> :
-                        <i className="fa fa-chevron-left" onClick={ () => { this.handleClick('left') }} aria-hidden="true"></i>
-                    }
-                    {data.isLastPage ?
-                        <i className="fa fa-chevron-right disabled" aria-hidden="true"></i> :
-                        <i className="fa fa-chevron-right" onClick={ () => { this.handleClick('right') }} aria-hidden="true"></i>
-                    }
-                </div>
-            </div>
-        );
+        this.handlePrevClick = this.handlePrevClick.bind(this);
+        this.handleNextClick = this.handleNextClick.bind(this);
     }
 
     getData () {
-        let tasks = this.props.data.tasks,
-            filtered = tasks.filter(task => task.obj_status === 'active'),
-            length = filtered.length;
-
-        let props = this.props.data,
-            page = props.currentPage,
-            pages = Math.ceil(length / props.tasksPerPage),
-            isFirstPage = page === 1,
-            isLastPage = page === pages;
+        const { data } = this.props;
+        const { tasks } = data;
+        const filtered = tasks.filter(task => task.obj_status === 'active');
+        const length = filtered.length;
+        const page = data.currentPage;
+        const pages = Math.ceil(length / data.tasksPerPage);
+        const isFirstPage = page === 1;
+        const isLastPage = page === pages;
 
         return {
-            page: page,
-            pages: pages,
-            isFirstPage: isFirstPage,
-            isLastPage: isLastPage
+            page,
+            pages,
+            isFirstPage,
+            isLastPage
         };
     }
 
-    handleClick (direction) {
-        let data = this.getData(),
-            page = data.page,
-            directions = {
-                'left': function () {
-                    page === 1 ? page : page--;
-                },
-                'right': function () {
-                    page === data.pages ? page : page++;
-                },
-            };
+    handlePrevClick () {
+        const data = this.getData();
+        const { page, isFirstPage } = data;
 
-        directions[direction]();
-
-        this.props.onClick(page);
+        return !isFirstPage && this.props.onClick(page - 1);
     }
 
-    getPageStatus () {
-        let data = this.getData();
+    handleNextClick () {
+        const data = this.getData();
+        const { page, isLastPage } = data;
 
-        return `page ${data.page} of ${data.pages}`;
+        return !isLastPage && this.props.onClick(page + 1);
+    }
+
+    render () {
+        const data = this.getData();
+        const { isFirstPage, isLastPage } = data;
+
+        return (
+            <div className="pagination">
+                <span className="pages">page {data.page} of {data.pages}</span>
+                <div className="arrows">
+                    <i
+                        className={`fa fa-chevron-left ${isFirstPage && 'disabled'}`}
+                        aria-hidden="true"
+                        onClick={this.handlePrevClick}
+                    />
+                    <i
+                        className={`fa fa-chevron-right ${isLastPage && 'disabled'}`}
+                        aria-hidden="true"
+                        onClick={this.handleNextClick}
+                    />
+                </div>
+            </div>
+        );
     }
 }
 

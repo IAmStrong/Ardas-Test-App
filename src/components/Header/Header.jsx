@@ -1,15 +1,16 @@
 import React from 'react';
-
 import './header.less';
+import logo from '../../images/logo.png';
 
-class Header extends React.Component {
-    render () {
-        return (
-            <header className="header">
-                <img src={require('../../images/logo.png')}/>
-            </header>
-        );
-    }
-}
+const Header = () => {
+    return (
+        <header className="header">
+            <img
+                src={logo}
+                alt="logo"
+            />
+        </header>
+    );
+};
 
 export default Header;

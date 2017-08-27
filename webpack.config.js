@@ -16,7 +16,7 @@ const config = {
     },
     resolve: {
         modules: ['node_modules', 'src'],
-        extensions: ['.js', 'jsx']
+        extensions: ['.js', '.jsx']
     },
     module: {
         rules: [{
@@ -25,11 +25,15 @@ const config = {
             use: [{
                 loader: 'react-hot-loader'
             }, {
-                loader: 'babel-loader',
-                options: {
-                    presets: ['react', 'es2015']
-                }
+                loader: 'babel-loader'
             }]
+        }, {
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            loader: 'eslint-loader',
+            options: {
+                emitWarning: true
+            }
         }, {
             test: /\.less$/,
             exclude: /node_modules/,
@@ -43,15 +47,11 @@ const config = {
         }, {
             test: /\.(jpg|png|woff|woff2|eot|ttf|svg)$/,
             exclude: /node_modules/,
-            use: [{
-                loader: 'url-loader'
-            }]
+            loader: 'url-loader'
         }, {
             test: /\.ico$/,
             exclude: /node_modules/,
-            use: [{
-                loader: 'file-loader?name=[name].[ext]'
-            }]
+            loader: 'file-loader?name=[name].[ext]'
         }]
     },
     devServer: {
